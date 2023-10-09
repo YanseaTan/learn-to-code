@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta charset="UTF-8">
+    <title>OriKit 3.0</title>
+</head>
+<body>
+
+<div id="main_body">
+    <textarea name="" id="output"  disabled style="overflow-y:auto" ></textarea>
+    <textarea name="" id="input"></textarea>
+    <div>
+        <a onclick="test()" id="button_fortest">An Useless Test Button</a>
+        <a onclick="chat()" id="button_sendmsg">Send</a>
+    </div>
+</div>
+
+<script>
+function chat()
+{
+    var url = 'http://localhost:8080/chat'
+    var outputTexterea = document.getElementById("output");
+    // 创建xhr
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.open('POST', url, true);
+    // 设置请求头
+    httpRequest.setRequestHeader("Content-type","text/plain");
+
+    // 发送请求
+    var input_text = document.getElementById("input").value;
+    console.info("input: " + input_text);
+    httpRequest.send(input_text + "EOF");
+    outputTexterea.value += "CharmingYou: " + input_text + "\n---\n";
+
+    // 清空发送区域
+    document.getElementById("input").value = "";
+    
+    // 响应处理
+    httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+            var responseText = httpRequest.responseText;
+            console.log("output: " + responseText);
+            outputTexterea.value += "OriKit3.0: " + responseText + "\n---\n";
+        }
+    };
+};
+function test() {
+    var url = 'http://localhost/test'// 创建xhr
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.open('POST', url, true);
+    httpRequest.setRequestHeader("Content-type","text/plain");
+    httpRequest.send("EOF");
+    
+    httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+            var responseText = httpRequest.responseText;
+            // console.log("output from server: " + responseText);
+            alert(responseText)
+        }
+    };
+};
+</script>
+
+<style>
+    *{height: 100%;}
+    #main_body{
+        width: 30%;
+        height:100%;
+        margin: auto;
+        overflow-y: hidden;
+        /* background-color: antiquewhite; */
+        font-size: large;
+    }
+
+    #output{
+        width: 90%;
+        height: 50%;
+        margin-top: 20%;
+        margin-left: 5%;
+        resize: none;
+        font-size: large;
+    }
+    #input{
+        width: 90%;
+        height: 10%;
+        margin-left: 5%;
+        resize: none;
+        font-size: large;
+    }
+    #button_fortest{
+        float: left;
+        margin-left: 5%;
+    }
+    #button_sendmsg{
+        float: right;
+        margin-right: 5%;
+    }
+</style>
+</body>
+</html>
